@@ -2,6 +2,8 @@
 *.d
 
 cmake-build-debug/
+CMakeFiles/
+build/
 .idea/
 
 # Compiled Object files
@@ -33,3 +35,8 @@ cmake-build-debug/
 *.exe
 *.out
 *.app
+
+# Cmake stuff
+cmake_install.cmake
+Makefile
+CMakeCache.txt

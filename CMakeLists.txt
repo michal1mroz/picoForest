@@ -1,13 +1,23 @@
 cmake_minimum_required(VERSION 3.26)
 project(picoForest)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenGL REQUIRED)
-find_package(X11 REQUIRED)
 
-set(CMAKE_CXX_STANDARD 17)
+# stop glfw tests, documentation and examples from
+# compiling
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+# set output to build/
+set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
+set(EXECUTABLE_OUTPUT_PATH  ${CMAKE_BINARY_DIR})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 add_executable(picoForest src/main.cpp)
 
-target_link_libraries(picoForest ${OPENGL_LIBRARIES} ${X11_LIBRARIES})
+add_subdirectory(lib/glfw-3.3.9)
 
-target_include_directories(picoForest PRIVATE ${OPENGL_INCLUDE_DIRS} ${X11_INCLUDE_DIR})
+# Got to link against OpenGL or it won't work :<
+target_link_libraries(picoForest glfw OpenGL)
