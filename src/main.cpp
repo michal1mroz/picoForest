@@ -35,6 +35,19 @@ float vertices[] = {
     -1.0f, 1.0f, 1.0f,
     1.0f, -1.0f, 1.0f,
     1.0f, 1.0f, 1.0f,
+
+
+    //ears
+    0.2f, 1.0f, 0.5f,
+    0.7f, 1.0f, 0.8f,
+    0.7f, 1.0f, 0.2f,
+    0.7f, 1.7f, 0.5f,
+
+    0.2f, 1.0f, -0.5f,
+    0.7f, 1.0f, -0.8f,
+    0.7f, 1.0f, -0.2f,
+    0.7f, 1.7f, -0.5f,
+
 };
 
 unsigned int indices[] = {
@@ -44,6 +57,15 @@ unsigned int indices[] = {
     3, 6, 7,
     1, 3, 5,
     3, 5, 7,
+
+
+    //ears
+    8, 9, 11,
+    8, 10, 11,
+
+    12, 13, 15,
+    12, 14, 15,
+
 };
 
 int load_shader(std::string filename, int kind) {
