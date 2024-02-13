@@ -15,4 +15,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 add_executable(picoForest src/main.cpp)
 
+<<<<<<< HEAD
 target_link_libraries(picoForest GLEW glfw glm OpenGL)
+=======
+target_link_libraries(picoForest GLEW glfw OpenGL)
+>>>>>>> main
