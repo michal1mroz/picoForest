@@ -5,6 +5,7 @@ cmake-build-debug/
 CMakeFiles/
 build/
 .idea/
+.vscode/
 
 # Compiled Object files
 *.slo
