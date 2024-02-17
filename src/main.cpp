@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <fstream>
+#include "kitty/Kitty.h"
 
 void errCallback(int error, const char* description){
     std::cerr << "GLFW Error: "<< description <<std::endl;
@@ -15,7 +16,7 @@ GLFWwindow *create_window() {
         exit(-1);
     }
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL Test", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(640, 480, "pico Forest", NULL, NULL);
     if(!window){
         std::cerr << "Failed to create GLFW window" <<std::endl;
         glfwTerminate();
@@ -25,48 +26,6 @@ GLFWwindow *create_window() {
     glewInit();
     return window;
 }
-
-float vertices[] = {
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, 1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-    1.0f, 1.0f, -1.0f,
-    -1.0f, -1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, -1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
-
-
-    //ears
-    0.2f, 1.0f, 0.5f,
-    0.7f, 1.0f, 0.8f,
-    0.7f, 1.0f, 0.2f,
-    0.7f, 1.7f, 0.5f,
-
-    0.2f, 1.0f, -0.5f,
-    0.7f, 1.0f, -0.8f,
-    0.7f, 1.0f, -0.2f,
-    0.7f, 1.7f, -0.5f,
-
-};
-
-unsigned int indices[] = {
-    0, 1, 2,
-    1, 2, 3,
-    2, 3, 6,
-    3, 6, 7,
-    1, 3, 5,
-    3, 5, 7,
-
-
-    //ears
-    8, 9, 11,
-    8, 10, 11,
-
-    12, 13, 15,
-    12, 14, 15,
-
-};
 
 int load_shader(std::string filename, int kind) {
     std::ifstream ifs(filename);
@@ -95,9 +54,7 @@ int load_shader(std::string filename, int kind) {
     return shader;
 }
 
-int main(){
-    auto window = create_window();
-
+GLuint shader_program_setup(){
     auto vertex_shader = load_shader("src/shader.vert", GL_VERTEX_SHADER);
     auto fragment_shader = load_shader("src/shader.frag", GL_FRAGMENT_SHADER);
     auto shader_program = glCreateProgram();
@@ -117,37 +74,34 @@ int main(){
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
-
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-
-    unsigned int ebo;
-    glGenBuffers(1, &ebo);
-
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
+    return shader_program;
+}
 
 
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-    glEnableVertexAttribArray(0);
+int main(){
+    auto window = create_window();
+    
+    auto shader_program = shader_program_setup();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    std::cout << "before Kitty\n";
+
+    Kitty cat(shader_program, 5, 0);
+    Kitty cat2(shader_program, 0,0);
+
+    std::cout <<"after dark\n";
 
     while(!glfwWindowShouldClose(window)){
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shader_program);
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        cat.render(); // somethings fucked up with its rendering
+        cat2.render(); 
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    glDeleteProgram(shader_program);
     glfwTerminate();
+
     return 0;
 }
