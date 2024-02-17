@@ -82,9 +82,13 @@ int main(){
     auto window = create_window();
     
     auto shader_program = shader_program_setup();
-    
-    Kitty cat(shader_program, 2, 2);
+
+    std::cout << "before Kitty\n";
+
+    Kitty cat(shader_program, 5, 0);
     Kitty cat2(shader_program, 0,0);
+
+    std::cout <<"after dark\n";
 
     while(!glfwWindowShouldClose(window)){
         glClear(GL_COLOR_BUFFER_BIT);
