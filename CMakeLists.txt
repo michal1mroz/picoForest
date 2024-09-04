@@ -1,6 +1,14 @@
+# Gotta add valgrind and some other analysers for the projects
 cmake_minimum_required(VERSION 3.26)
+
 project(picoForest)
+set(output_name ${PROJECT_NAME})
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "--std=c++17 -Wall -Wextra -pedantic")
+set(COMPILER_DEBUG_FLAGS "-D_DEBUG")
+set(LINKER_FLAGS "--std=c++17")
+set(CMAKE_BUILD_TYPE Debug)
 
 # Can modify the version if you wish...
 find_package(OpenGL REQUIRED)
@@ -13,10 +21,28 @@ set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/build)
 set(EXECUTABLE_OUTPUT_PATH  ${CMAKE_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
-add_executable(picoForest src/main.cpp)
+file(GLOB_RECURSE sources
+  "src/main.cpp"
+)
 
-<<<<<<< HEAD
-target_link_libraries(picoForest GLEW glfw glm OpenGL)
-=======
-target_link_libraries(picoForest GLEW glfw OpenGL)
->>>>>>> main
+add_executable(${output_name} ${sources})
+
+target_link_libraries(${output_name} GLEW glfw glm OpenGL)
+
+add_custom_target(run
+  COMMAND ${CMAKE_BINARY_DIR}/${output_name}
+  DEPENDS ${output_name}
+  COMMENT "Running project"
+)
+
+add_custom_target(run_gdb
+  COMMAND gdb ${CMAKE_BINARY_DIR}/${output_name}
+  DEPENDS ${output_name}
+  COMMENT "Running debug in gdb"
+)
+
+add_custom_target(clean_all
+  COMMAND ${CMAKE_COMMAND} -E rm -r
+    ${CMAKE_BINARY_DIR} CMakeFiles CMakeCache.txt cmake_install.cmake Makefile
+  COMMENT "Cleaning generated files"
+)
