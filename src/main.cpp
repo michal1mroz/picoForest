@@ -8,98 +8,59 @@
 #include <iostream>
 #include <vector>
 
-#include "display/MainDisplay.h"
+#include "display/MainDisplay.h" 
+#include "shaders/Shader.h"
 
 float vertices[] = {
-    -1.0f,
-    -1.0f,
-    -1.0f,
-    -1.0f,
-    1.0f,
-    -1.0f,
-    1.0f,
-    -1.0f,
-    -1.0f,
-    1.0f,
-    1.0f,
-    -1.0f,
-    -1.0f,
-    -1.0f,
-    1.0f,
-    -1.0f,
-    1.0f,
-    1.0f,
-    1.0f,
-    -1.0f,
-    1.0f,
-    1.0f,
-    1.0f,
-    1.0f,
+    -1.0f,-1.0f,-1.0f, // 0
+    -1.0f,1.0f,-1.0f, // 1
+    1.0f,-1.0f,-1.0f, // 2
+    1.0f,1.0f,-1.0f, // 3
+    -1.0f,-1.0f,1.0f, // 4
+    -1.0f,1.0f,1.0f, // 5
+    1.0f,-1.0f,1.0f, // 6
+    1.0f,1.0f,1.0f, // 7
+
 
     // ears
-    -0.2f,
-    1.0f,
-    0.5f,
-    0.7f,
-    1.0f,
-    0.8f,
-    0.7f,
-    1.0f,
-    0.2f,
-    0.7f,
-    1.9f,
-    0.5f,
+    -0.2f,1.0f,0.5f, // 8
+    0.7f,1.0f,0.8f, // 9
+    0.7f,1.0f,0.2f, // 10
+    0.7f,1.9f,0.5f, // 11
 
-    -0.2f,
-    1.0f,
-    -0.5f,
-    0.7f,
-    1.0f,
-    -0.8f,
-    0.7f,
-    1.0f,
-    -0.2f,
-    0.7f,
-    1.9f,
-    -0.5f,
+    -0.2f,1.0f,-0.5f, // 12
+    0.7f,1.0f,-0.8f, // 13
+    0.7f,1.0f,-0.2f, // 14 
+    0.7f,1.9f,-0.5f, // 15
 
 };
 
 unsigned int indices[] = {
-    0,
-    1,
-    2,
-    1,
-    2,
-    3,
-    2,
-    3,
-    6,
-    3,
-    6,
-    7,
-    1,
-    3,
-    5,
-    3,
-    5,
-    7,
-
+    0,2,1,
+    1,2,3,
+    2,6,3,
+    3,6,7,
+    1,3,5,
+    3,7,5,
+    0,1,5,
+    0,5,4,
+    6,5,7,
+    4,5,6,
+  
+    0,4,2,
+    4,6,2,
     // ears
-    8,
-    9,
-    11,
-    8,
-    10,
-    11,
+    8,9,11,
+    8,10,11,
+    
+    8,11,9,
+    8,11,10,
 
-    12,
-    13,
-    15,
-    12,
-    14,
-    15,
-
+    12,13,15,
+    12,14,15,
+  
+    12,15,13,
+    12,15,14,
 };
 
 typedef std::vector<float> vertex;
@@ -192,26 +153,7 @@ int load_shader(std::string filename, int kind) {
 
 int main() {
   MainDisplay window;
-
-  auto vertex_shader = load_shader("src/shader.vert", GL_VERTEX_SHADER);
-  auto fragment_shader = load_shader("src/shader.frag", GL_FRAGMENT_SHADER);
-  auto shader_program = glCreateProgram();
-  glAttachShader(shader_program, vertex_shader);
-  glAttachShader(shader_program, fragment_shader);
-  glLinkProgram(shader_program);
-
-  int status;
-  glGetProgramiv(shader_program, GL_LINK_STATUS, &status);
-  if (!status) {
-    char info[512];
-    glGetProgramInfoLog(shader_program, 512, nullptr, info);
-    std::cerr << info << std::endl;
-    exit(-1);
-  }
-
-  glDeleteShader(vertex_shader);
-  glDeleteShader(fragment_shader);
-
+  Shader shader("src/shader.vert", "src/shader.frag");
   auto vertex_data = generate_vertex_data();
 
   unsigned int vbo;
@@ -231,16 +173,23 @@ int main() {
                         (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
-  int proj_loc = glGetUniformLocation(shader_program, "projection");
+  //auto proj_loc = glGetUniformLocation(shader.getProgramID(), "projection");
+
   auto proj =
       glm::perspective(glm::radians(60.0f), 640.f / 480.f, 0.1f, 100.0f);
-
+  
+  // For fixing the vertex order;
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  //glCullFace(GL_FRONT);
+  
   glEnable(GL_DEPTH_TEST);
   while (!window.shouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(shader_program);
-    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(proj));
+    shader.use();
+    shader.setUniform("projection", proj);
+
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, vertex_data.size());
 

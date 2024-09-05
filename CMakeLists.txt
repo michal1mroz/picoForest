@@ -25,6 +25,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 file(GLOB_RECURSE sources
   "src/main.cpp"
   "src/display/*.cpp"
+  "src/shaders/*.cpp"
 )
 
 add_executable(${output_name} ${sources})
