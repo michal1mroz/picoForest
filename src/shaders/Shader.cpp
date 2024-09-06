@@ -47,6 +47,7 @@ std::string Shader::loadShaderSource(const std::string& path){
   }
   std::stringstream buffer;
   buffer << file.rdbuf();
+  file.close();
   return buffer.str();
 }
 

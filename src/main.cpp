@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "display/MainDisplay.h" 
+#include "meshes/MeshLoader.h"
 #include "shaders/Shader.h"
 
 float vertices[] = {
@@ -154,6 +155,10 @@ int load_shader(std::string filename, int kind) {
 int main() {
   MainDisplay window;
   Shader shader("src/shader.vert", "src/shader.frag");
+
+  MeshLoader md;
+  auto x = md.loadFromObj("resources/kitty/kitty.obj");
+
   auto vertex_data = generate_vertex_data();
 
   unsigned int vbo;
