@@ -174,7 +174,6 @@ int main() {
   glEnableVertexAttribArray(1);
 
   //auto proj_loc = glGetUniformLocation(shader.getProgramID(), "projection");
-
   auto proj =
       glm::perspective(glm::radians(60.0f), 640.f / 480.f, 0.1f, 100.0f);
   
@@ -194,6 +193,7 @@ int main() {
     glDrawArrays(GL_TRIANGLES, 0, vertex_data.size());
 
     window.update();
+
   }
   return 0;
 }
