@@ -1,18 +1,17 @@
 #include "MainDisplay.h"
-#include <GLFW/glfw3.h>
 
 // Public
-MainDisplay::MainDisplay(int width, int height, const std::string& title)
-  :WIDTH{width}, HEIGHT{height}, window{nullptr, glfwDestroyWindow}
-{
+MainDisplay::MainDisplay(int width, int height, const std::string &title)
+    : window{nullptr, glfwDestroyWindow}, WIDTH{width}, HEIGHT{height}{
   glfwSetErrorCallback(errorCallback);
-  if(!glfwInit()){
+  if (!glfwInit()) {
     std::cerr << "Failed to initialize GLFW" << std::endl;
     exit(-1);
   }
 
-  GLFWwindow* raw_ptr = glfwCreateWindow(this->WIDTH, this->HEIGHT, title.c_str(), NULL, NULL);
-  if(!raw_ptr){
+  GLFWwindow *raw_ptr =
+      glfwCreateWindow(this->WIDTH, this->HEIGHT, title.c_str(), NULL, NULL);
+  if (!raw_ptr) {
     glfwTerminate();
     std::cerr << "Failde to create GLFW window" << std::endl;
     exit(-1);
@@ -22,13 +21,13 @@ MainDisplay::MainDisplay(int width, int height, const std::string& title)
   glewInit();
 }
 
-MainDisplay::~MainDisplay(){
+MainDisplay::~MainDisplay() {
   std::cout << "GLFW window terminating\n";
   this->window.reset(); // to prevent the 65537 error
   glfwTerminate();
 }
 
-void MainDisplay::update(){
+void MainDisplay::update() {
   glfwSwapBuffers(this->window.get());
   glfwPollEvents();
 }
@@ -38,8 +37,8 @@ bool MainDisplay::shouldClose() const {
 }
 
 // Private
-void MainDisplay::errorCallback(int error, const char* description){
+void MainDisplay::errorCallback(int error, const char *description) {
   std::cerr << "GLFW error in MainDisplay\n";
-  std::cerr << "GLFW error code: "<< error <<
-  "\nError message: "<< description << std::endl;
+  std::cerr << "GLFW error code: " << error
+            << "\nError message: " << description << std::endl;
 }

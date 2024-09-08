@@ -3,6 +3,6 @@
 bool MeshData::isValid() const {
   return !vertices.empty() &&
          (!normals.empty() || normals.size() == vertices.size()) &&
-         (!texCoords.empty() || texCoords.size() == vertices.size());
+         (!textures.empty() || textures.size() == vertices.size());
 }
 

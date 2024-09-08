@@ -2,25 +2,26 @@
 #define MESHLOADER_H
 
 /*
-*   Class for loading mesh data from .obj files
-*/
+ *   Class for loading mesh data from .obj files
+ */
 
 #include "MeshData.h"
-#include <string>
-#include <fstream>
-#include <sstream>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <sstream>
+#include <string>
 
-class MeshLoader{
+class MeshLoader {
 public:
-  MeshData loadFromObj(const std::string& path);
+  MeshData loadFromObj(const std::string &path);
 
 private:
-  void handleVertex(MeshData& data, std::istringstream& stream);
-  void handleNormal(MeshData& data, std::istringstream& stream);
-  void handleTexture(MeshData& data, std::istringstream& stream);
-  void handleFace(MeshData& data, std::istringstream& stream);
+  void handleVertex(TemporaryMeshData &data, std::istringstream &stream);
+  void handleNormal(TemporaryMeshData &data, std::istringstream &stream);
+  void handleTexture(TemporaryMeshData &data, std::istringstream &stream);
+  void handleFace(TemporaryMeshData &data, std::istringstream &stream);
+  TemporaryMeshData loadToTemporary(const std::string &filePath);
 };
 
 #endif // MESHLOADER_H
