@@ -5,10 +5,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "display/MainDisplay.h" 
+#include "display/MainDisplay.h"
+#include "entity/Entity.h"
 #include "meshes/Mesh.h"
 #include "meshes/MeshLoader.h"
 #include "shaders/Shader.h"
+
+auto null_mesh = [](Mesh *ptr) {};
+auto null_shrdr = [](Shader *ptr) {};
 
 int main() {
   MainDisplay window;
@@ -18,21 +22,35 @@ int main() {
   auto x = md.loadFromObj("resources/kitty/kitty.obj");
   Mesh m(x);
 
-  auto proj =
-      glm::perspective(glm::radians(60.0f), 640.f / 480.f, 0.1f, 100.0f);
-  
+  std::shared_ptr<Mesh> mesh_ptr = std::shared_ptr<Mesh>(&m, null_mesh);
+  std::shared_ptr<Shader> shader_ptr =
+      std::shared_ptr<Shader>(&shader, null_shrdr);
+
+  Entity en(mesh_ptr, shader_ptr);
+
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
-  
+
+  glm::mat4 view =
+      glm::lookAt(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f),
+                  glm::vec3(0.0f, 1.0f, 0.0f));
+  glm::mat4 projection =
+      glm::perspective(glm::radians(60.0f), 640.0f / 480.0f, 0.1f, 100.0f);
+
   glEnable(GL_DEPTH_TEST);
   while (!window.shouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shader.use();
-    shader.setUniform("projection", proj);
+    shader.setUniform("view", view);
+    shader.setUniform("projection", projection);
 
-    m.render();
+    auto r = en.getRotation();
+    r.y++;
+    en.setRotation(r);
+    en.draw();
     window.update();
   }
+
   return 0;
 }
