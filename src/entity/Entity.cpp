@@ -1,6 +1,4 @@
 #include "Entity.h"
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 
 Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
     : mesh{mesh}, shader{shader} {}
