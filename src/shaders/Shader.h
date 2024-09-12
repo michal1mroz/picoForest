@@ -19,18 +19,26 @@ private:
 
   GLuint programID;
   std::unordered_map<std::string, GLint> uniformCache;
-  
 public:
   Shader(const std::string& vertexPath, const std::string& fragmentPath);
   ~Shader();
+
+  bool operator ==(const Shader& other) const;
+  GLuint getProgramID() const;
   
-  GLuint getProgramID();
   void use() const;
   void setUniform(const std::string& name, int value);
   void setUniform(const std::string& name, float value);
   void setUniform(const std::string& name, const glm::vec3& value);
   void setUniform(const std::string& name, const glm::mat4& value);
-
 };
 
+namespace std{
+  template<>
+  struct hash<Shader> {
+    std::size_t operator()(const Shader& shader) const{
+      return std::hash<GLuint>{}(shader.getProgramID());
+  }
+  };
+}
 #endif // SHADER_H

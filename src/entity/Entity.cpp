@@ -23,7 +23,6 @@ void Entity::draw() const {
 
   glm::mat4 model = getModelMatrix();
   shader->use();
-
   shader->setUniform("model", model);
 
   mesh->render();

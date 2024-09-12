@@ -75,7 +75,7 @@ void Shader::use() const{
   if(programID != 0) glUseProgram(programID);
 }
 
-void Shader::setUniform(const std::string& name, int value){
+void Shader::setUniform(const std::string& name, int value) {
   glUniform1i(getUniformLocation(name), value);
 }
 
@@ -95,6 +95,7 @@ GLint Shader::getUniformLocation(const std::string& name){
   if(uniformCache.find(name) != uniformCache.end()){
     return uniformCache[name];
   }
+  return glGetUniformLocation(programID, name.c_str());
   auto location = glGetUniformLocation(programID, name.c_str());
   if(location == -1){
     std::cerr << "Warning: Uniform " << name << " doesn't exist!" << std::endl;
@@ -104,6 +105,11 @@ GLint Shader::getUniformLocation(const std::string& name){
   return location;
 }
 
-GLuint Shader::getProgramID(){
+GLuint Shader::getProgramID() const {
   return this->programID;
 }
+
+bool Shader::operator==(const Shader& other) const{
+  return this->programID == other.getProgramID();
+}
+

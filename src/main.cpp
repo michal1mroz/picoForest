@@ -10,6 +10,7 @@
 #include "entity/Entity.h"
 #include "meshes/Mesh.h"
 #include "meshes/MeshLoader.h"
+#include "renderer/Renderer.h"
 #include "shaders/Shader.h"
 
 auto null_mesh = [](Mesh *ptr) {};
@@ -28,25 +29,24 @@ int main() {
       std::shared_ptr<Shader>(&shader, null_shrdr);
 
   Entity en(mesh_ptr, shader_ptr);
+  Entity en2(mesh_ptr, shader_ptr);
+  en2.setPosition(glm::vec3(3.0f, 1.0f, -5.0f));
 
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   Camera camera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f), 60.0f, 640.0f / 480.0f, 0.1f,
                 100.0f);
-
+  std::vector<Entity> targets;
+  targets.push_back(en);
+  targets.push_back(en2);
   glEnable(GL_DEPTH_TEST);
+  Renderer r;
+  
   while (!window.shouldClose()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    shader.use();
-    shader.setUniform("view", camera.getViewMatrix());
-    shader.setUniform("projection", camera.getProjectionMatrix());
-
-    auto r = en.getRotation();
-    r.y++;
-    en.setRotation(r);
-    en.draw();
+    r.render(targets, camera);
     window.update();
   }
 
