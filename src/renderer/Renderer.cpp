@@ -1,12 +1,30 @@
 #include "Renderer.h"
 
+/*
+*   Uses getHash and getShader() methods to first map the id of shader
+*   onto vector of entities and then by looping over those idies
+*   batch renders every object with a given shader
+*/
+
 void Renderer::render(std::vector<Entity> &entities, Camera &camera) { 
-  
-  for(const auto& entry: entities){
-    Shader sh = *(entry.getShader());
-    sh.use();
-    sh.setUniform("view", camera.getViewMatrix());
-    sh.setUniform("projection", camera.getProjectionMatrix());
-    entry.draw();
+  prepareBatch(entities); 
+  for(auto& pair: batchMapping){
+    std::vector<Entity> batch = pair.second;
+    if(!batch.empty()){
+      auto& shader = batch[0].getShader();
+      shader->use();
+      shader->setUniform("view", camera.getViewMatrix());
+      shader->setUniform("projection", camera.getProjectionMatrix());
+      for(auto& entity: batch){
+        entity.draw();
+      }
+    }
+  }
+}
+
+void Renderer::prepareBatch(std::vector<Entity>& entities){
+  batchMapping.clear();
+  for(const auto& entity: entities){
+    batchMapping[entity.getHash()].push_back(entity);
   }
 }

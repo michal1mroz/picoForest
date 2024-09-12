@@ -23,7 +23,6 @@ public:
   Shader(const std::string& vertexPath, const std::string& fragmentPath);
   ~Shader();
 
-  bool operator ==(const Shader& other) const;
   GLuint getProgramID() const;
   
   void use() const;
@@ -33,12 +32,4 @@ public:
   void setUniform(const std::string& name, const glm::mat4& value);
 };
 
-namespace std{
-  template<>
-  struct hash<Shader> {
-    std::size_t operator()(const Shader& shader) const{
-      return std::hash<GLuint>{}(shader.getProgramID());
-  }
-  };
-}
 #endif // SHADER_H

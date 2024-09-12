@@ -9,6 +9,9 @@
 class Renderer{
 public:
   void render(std::vector<Entity>& entities, Camera& camera);
+private:
+  std::unordered_map<size_t, std::vector<Entity>> batchMapping;
+  void prepareBatch(std::vector<Entity>& entities);
 };
 
 #endif // RENDERER_H
