@@ -1,6 +1,7 @@
 #include "Mesh.h"
 
-Mesh::Mesh(const MeshData &data) { setupMesh(data); }
+Mesh::Mesh(const MeshData &data) { 
+  setupMesh(data); }
 
 Mesh::Mesh(const std::string &filePath) {
   MeshLoader loader;

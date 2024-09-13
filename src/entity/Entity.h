@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "../meshes/Mesh.h"
+#include "../meshes/MeshManager.h"
 #include "../shaders/Shader.h"
 #include <memory>
 #include <glm/ext/matrix_clip_space.hpp>
@@ -10,7 +11,8 @@
 class Entity {
 public:
   Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader);
-  
+  Entity(const std::string& meshPath, std::shared_ptr<Shader> shader);
+
   const glm::vec3& getPosition() const {return position;}
   void setPosition(const glm::vec3& pos) {position = pos;}
 

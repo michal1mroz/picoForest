@@ -3,6 +3,11 @@
 Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
     : mesh{mesh}, shader{shader} {}
 
+Entity::Entity(const std::string& meshPath, std::shared_ptr<Shader> shader){
+  this->mesh = MeshManager::getInstance().getMesh(meshPath);
+  this->shader = shader;
+}
+
 glm::mat4 Entity::getModelMatrix() const {
 
   glm::mat4 model = glm::mat4(1.0f);
