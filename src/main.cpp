@@ -22,11 +22,14 @@ int main() {
       std::make_shared<Shader>("src/shader2.vert", "src/shader2.frag");
   std::shared_ptr<Mesh> kittyMesh =
       MeshManager::getInstance().getMesh("resources/kitty/kitty.obj");
+  std::shared_ptr<Mesh> blockMesh =
+      MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
-  Entity en("resources/kitty/kitty.obj", shader1);
-  Entity en2(kittyMesh, shader2);
-  en2.setPosition(glm::vec3(3.0f, 1.0f, -5.0f));
+  Entity en(kittyMesh, shader1);
+  Entity en2(blockMesh, shader2);
+  en2.setPosition(glm::vec3(2.0f, 1.0f, -2.0f));
 
+  en2.setRotation(glm::vec3(0.0f, 30.0f, 0.0f));
   Camera camera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f), 60.0f, 640.0f / 480.0f, 0.1f,
                 100.0f);
@@ -39,6 +42,13 @@ int main() {
 
   while (!window.shouldClose()) {
     r.prepare();
+    glm::vec3 pos = en2.getRotation();
+    pos.x ++;
+    en2.setRotation(pos);
+    targets.clear();
+    targets.push_back(en);
+    targets.push_back(en2);
+
     r.render(targets, camera);
     window.update();
   }

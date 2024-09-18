@@ -1,7 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh(const MeshData &data) { 
-  setupMesh(data); }
+Mesh::Mesh(const MeshData &data) { setupMesh(data); }
 
 Mesh::Mesh(const std::string &filePath) {
   MeshLoader loader;
@@ -37,7 +36,7 @@ void Mesh::setupMesh(const MeshData &data) {
   loadDataToAttributeList(1, data.textures, 2);
   loadDataToAttributeList(2, data.normals, 3);
   unbindVAO();
-  indexCount = data.vertices.size();
+  indexCount = data.indices.size();
 }
 
 void Mesh::createVAO() {
@@ -51,10 +50,10 @@ void Mesh::loadDataToAttributeList(int attributeNumb, std::vector<float> data,
   glGenBuffers(1, &vboID);
   this->vbos.push_back(vboID);
   glBindBuffer(GL_ARRAY_BUFFER, vboID);
-  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), 
-               &data[0], GL_STATIC_DRAW);
-  glVertexAttribPointer(attributeNumb, coordinateSize, 
-                        GL_FLOAT, GL_FALSE, 0, 0);
+  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0],
+               GL_STATIC_DRAW);
+  glVertexAttribPointer(attributeNumb, coordinateSize, GL_FLOAT, GL_FALSE, 0,
+                        0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
