@@ -16,25 +16,25 @@ void Renderer::prepare() const {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::render(std::vector<Entity> &entities, Camera &camera) {
+void Renderer::render(std::vector<std::shared_ptr<Entity>> &entities, Camera &camera) {
   prepareBatch(entities);
   for (auto &pair : batchMapping) {
-    std::vector<Entity> batch = pair.second;
+    std::vector<std::shared_ptr<Entity>> batch = pair.second;
     if (!batch.empty()) {
-      auto &shader = batch[0].getShader();
+      auto &shader = batch[0]->getShader();
       shader->use();
       shader->setUniform("view", camera.getViewMatrix());
       shader->setUniform("projection", camera.getProjectionMatrix());
       for (auto &entity : batch) {
-        entity.draw();
+        entity->draw();
       }
     }
   }
 }
 
-void Renderer::prepareBatch(std::vector<Entity> &entities) {
+void Renderer::prepareBatch(std::vector<std::shared_ptr<Entity>> &entities) {
   batchMapping.clear();
   for (const auto &entity : entities) {
-    batchMapping[entity.getHash()].push_back(entity);
+    batchMapping[entity->getHash()].push_back(entity);
   }
 }

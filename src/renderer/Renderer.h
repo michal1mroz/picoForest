@@ -9,12 +9,12 @@
 class Renderer{
 public:
   Renderer();
-  void render(std::vector<Entity>& entities, Camera& camera);
+  void render(std::vector<std::shared_ptr<Entity>>& entities, Camera& camera);
   void prepare() const;
 
 private:
-  std::unordered_map<size_t, std::vector<Entity>> batchMapping;
-  void prepareBatch(std::vector<Entity>& entities);
+  std::unordered_map<size_t, std::vector<std::shared_ptr<Entity>>> batchMapping;
+  void prepareBatch(std::vector<std::shared_ptr<Entity>>& entities);
 };
 
 #endif // RENDERER_H
