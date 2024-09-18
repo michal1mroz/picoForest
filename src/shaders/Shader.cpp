@@ -92,9 +92,9 @@ void Shader::setUniform(const std::string& name, const glm::mat4& value){
 }
 
 GLint Shader::getUniformLocation(const std::string& name){
-  //if(uniformCache.find(name) != uniformCache.end()){
-  //  return uniformCache[name];
-  //}
+  if(uniformCache.find(name) != uniformCache.end()){
+    return uniformCache[name];
+  }
   return glGetUniformLocation(programID, name.c_str());
   auto location = glGetUniformLocation(programID, name.c_str());
   if(location == -1){
