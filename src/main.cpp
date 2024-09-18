@@ -17,9 +17,9 @@ int main() {
   MainDisplay window;
 
   std::shared_ptr<Shader> shader1 =
-      std::make_shared<Shader>("src/shader.vert", "src/shader.frag");
+      std::make_shared<Shader>("resources/shaders/shader.vert", "resources/shaders/shader.frag");
   std::shared_ptr<Shader> shader2 =
-      std::make_shared<Shader>("src/shader2.vert", "src/shader2.frag");
+      std::make_shared<Shader>("resources/shaders/shader2.vert", "resources/shaders/shader2.frag");
   std::shared_ptr<Mesh> kittyMesh =
       MeshManager::getInstance().getMesh("resources/kitty/kitty.obj");
   std::shared_ptr<Mesh> blockMesh =
@@ -42,6 +42,7 @@ int main() {
 
   while (!window.shouldClose()) {
     r.prepare();
+
     glm::vec3 pos = en2.getRotation();
     pos.x ++;
     en2.setRotation(pos);
