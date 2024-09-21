@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "display/MainDisplay.h"
+#include "display/InputManager.h"
 #include "entity/Camera.h"
 #include "entity/Entity.h"
 #include "entity/Kitty.h"
@@ -26,7 +27,7 @@ int main() {
   std::shared_ptr<Mesh> blockMesh =
       MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
-  std::shared_ptr<Entity> en = std::make_shared<Entity>(kittyMesh, shader1);
+  std::shared_ptr<Entity> en = std::make_shared<Kitty>(shader1);
   std::shared_ptr<Entity> en2 = std::make_shared<Kitty>(shader2);
   en2->setPosition(glm::vec3(2.0f, 1.0f, -2.0f));
 
@@ -41,15 +42,20 @@ int main() {
 
   Renderer r;
 
+  InputManager& input = InputManager::getInstance();
+
   while (!window.shouldClose()) {
+    input.pollEvents(window.getWindowPtr()); 
     r.prepare();
 
-    auto pos = en2->getRotation();
-    pos.x ++;
-    en2->setRotation(pos);
-    
+    en2->move();
+
     r.render(targets, camera);
     window.update();
+
+    if(input.isCommandActive(InputManager::EXIT)){
+      break;
+    } 
   }
 
   return 0;

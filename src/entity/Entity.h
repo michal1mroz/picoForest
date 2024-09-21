@@ -36,6 +36,7 @@ public:
   virtual void draw() const;
   std::size_t getHash() const;
 
+  virtual void move() = 0;
 private:
   glm::mat4 getModelMatrix() const;
 
