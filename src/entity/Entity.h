@@ -33,7 +33,7 @@ public:
 
   const std::shared_ptr<Shader> getShader() const { return this->shader; }
 
-  void draw() const;
+  virtual void draw() const;
   std::size_t getHash() const;
 
 private:

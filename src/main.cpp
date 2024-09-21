@@ -8,6 +8,7 @@
 #include "display/MainDisplay.h"
 #include "entity/Camera.h"
 #include "entity/Entity.h"
+#include "entity/Kitty.h"
 #include "meshes/Mesh.h"
 #include "meshes/MeshManager.h"
 #include "renderer/Renderer.h"
@@ -26,7 +27,7 @@ int main() {
       MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
   std::shared_ptr<Entity> en = std::make_shared<Entity>(kittyMesh, shader1);
-  std::shared_ptr<Entity> en2 = std::make_shared<Entity>(blockMesh, shader2);
+  std::shared_ptr<Entity> en2 = std::make_shared<Kitty>(shader2);
   en2->setPosition(glm::vec3(2.0f, 1.0f, -2.0f));
 
   en2->setRotation(glm::vec3(0.0f, 30.0f, 0.0f));

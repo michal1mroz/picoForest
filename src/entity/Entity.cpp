@@ -3,15 +3,13 @@
 Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
     : mesh{mesh}, shader{shader}, modelMatrix{getModelMatrix()} {}
 
-Entity::Entity(const std::string& meshPath, std::shared_ptr<Shader> shader)
-    : modelMatrix{getModelMatrix()}
-{
+Entity::Entity(const std::string &meshPath, std::shared_ptr<Shader> shader)
+    : modelMatrix{getModelMatrix()} {
   this->mesh = MeshManager::getInstance().getMesh(meshPath);
   this->shader = shader;
 }
 
 glm::mat4 Entity::getModelMatrix() const {
-  std::cout << "Calculated new matrix\n";
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, this->position);
   model = glm::rotate(model, glm::radians(this->rotation.x),
@@ -28,8 +26,8 @@ void Entity::draw() const {
   if (!shader || !mesh)
     return;
 
-  //glm::mat4 model = getModelMatrix();
-  //shader->use();
+  // glm::mat4 model = getModelMatrix();
+  // shader->use();
   shader->setUniform("model", modelMatrix);
 
   mesh->render();
