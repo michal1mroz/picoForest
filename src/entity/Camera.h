@@ -13,7 +13,7 @@ public:
   
   glm::mat4 getViewMatrix() const { return viewMatrix; }
   glm::mat4 getProjectionMatrix() const { return projectionMatrix; }
-
+  glm::vec3 getPosition() const {return position;}
   void setPosition(const glm::vec3 &pos);
   void setTarget(const glm::vec3 &tgt);
   void setUpVector(const glm::vec3 &upVec);

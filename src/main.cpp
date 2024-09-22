@@ -10,6 +10,7 @@
 #include "entity/Camera.h"
 #include "entity/Entity.h"
 #include "entity/Kitty.h"
+#include "entity/Light.h"
 #include "meshes/Mesh.h"
 #include "meshes/MeshManager.h"
 #include "renderer/Renderer.h"
@@ -22,8 +23,6 @@ int main() {
       std::make_shared<Shader>("resources/shaders/shader.vert", "resources/shaders/shader.frag");
   std::shared_ptr<Shader> shader2 =
       std::make_shared<Shader>("resources/shaders/shader2.vert", "resources/shaders/shader2.frag");
-  std::shared_ptr<Mesh> kittyMesh =
-      MeshManager::getInstance().getMesh("resources/kitty/kitty.obj");
   std::shared_ptr<Mesh> blockMesh =
       MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
@@ -36,6 +35,7 @@ int main() {
                 glm::vec3(0.0f, 1.0f, 0.0f), 60.0f, 640.0f / 480.0f, 0.1f,
                 100.0f);
 
+  Light light(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.5f));
   std::vector<std::shared_ptr<Entity>> targets;
   targets.push_back(en);
   targets.push_back(en2);
@@ -48,9 +48,9 @@ int main() {
     input.pollEvents(window.getWindowPtr()); 
     r.prepare();
 
-    en2->move();
+    en->move();
 
-    r.render(targets, camera);
+    r.render(targets, camera, light);
     window.update();
 
     if(input.isCommandActive(InputManager::EXIT)){

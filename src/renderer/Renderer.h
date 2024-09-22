@@ -5,11 +5,12 @@
 #include "../entity/Entity.h"
 #include "../entity/Camera.h"
 #include "../shaders/Shader.h"
+#include "../entity/Light.h"
 
 class Renderer{
 public:
   Renderer();
-  void render(std::vector<std::shared_ptr<Entity>>& entities, Camera& camera);
+  void render(std::vector<std::shared_ptr<Entity>>& entities, Camera& camera, Light& light);
   void prepare() const;
 
 private:
