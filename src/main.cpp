@@ -1,153 +1,62 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include <fstream>
+#include <cmath>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-void errCallback(int error, const char* description){
-    std::cerr << "GLFW Error: "<< description <<std::endl;
-}
+#include "display/MainDisplay.h"
+#include "display/InputManager.h"
+#include "entity/Camera.h"
+#include "entity/Entity.h"
+#include "entity/Kitty.h"
+#include "entity/Light.h"
+#include "meshes/Mesh.h"
+#include "meshes/MeshManager.h"
+#include "renderer/Renderer.h"
+#include "shaders/Shader.h"
 
-GLFWwindow *create_window() {
-    glfwSetErrorCallback(errCallback);
+int main() {
+  MainDisplay window;
 
-    if(!glfwInit()){
-        std::cerr << "Failed to initialize GLFW" <<std::endl;
-        exit(-1);
-    }
+  std::shared_ptr<Shader> shader1 =
+      std::make_shared<Shader>("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+  std::shared_ptr<Shader> shader2 =
+      std::make_shared<Shader>("resources/shaders/shader2.vert", "resources/shaders/shader2.frag");
+  std::shared_ptr<Mesh> blockMesh =
+      MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
-    GLFWwindow* window = glfwCreateWindow(640, 480, "OpenGL Test", NULL, NULL);
-    if(!window){
-        std::cerr << "Failed to create GLFW window" <<std::endl;
-        glfwTerminate();
-        exit(-1);
-    }
-    glfwMakeContextCurrent(window);
-    glewInit();
-    return window;
-}
+  std::shared_ptr<Entity> en = std::make_shared<Kitty>(shader1);
+  std::shared_ptr<Entity> en2 = std::make_shared<Kitty>(shader2);
+  en2->setPosition(glm::vec3(2.0f, 1.0f, -2.0f));
 
-float vertices[] = {
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, 1.0f, -1.0f,
-    1.0f, -1.0f, -1.0f,
-    1.0f, 1.0f, -1.0f,
-    -1.0f, -1.0f, 1.0f,
-    -1.0f, 1.0f, 1.0f,
-    1.0f, -1.0f, 1.0f,
-    1.0f, 1.0f, 1.0f,
+  en2->setRotation(glm::vec3(0.0f, 30.0f, 0.0f));
+  Camera camera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f), 60.0f, 640.0f / 480.0f, 0.1f,
+                100.0f);
 
+  Light light(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.5f));
+  std::vector<std::shared_ptr<Entity>> targets;
+  targets.push_back(en);
+  targets.push_back(en2);
 
-    //ears
-    0.2f, 1.0f, 0.5f,
-    0.7f, 1.0f, 0.8f,
-    0.7f, 1.0f, 0.2f,
-    0.7f, 1.7f, 0.5f,
+  Renderer r;
 
-    0.2f, 1.0f, -0.5f,
-    0.7f, 1.0f, -0.8f,
-    0.7f, 1.0f, -0.2f,
-    0.7f, 1.7f, -0.5f,
+  InputManager& input = InputManager::getInstance();
 
-};
+  while (!window.shouldClose()) {
+    input.pollEvents(window.getWindowPtr()); 
+    r.prepare();
 
-unsigned int indices[] = {
-    0, 1, 2,
-    1, 2, 3,
-    2, 3, 6,
-    3, 6, 7,
-    1, 3, 5,
-    3, 5, 7,
+    en->move();
 
+    r.render(targets, camera, light);
+    window.update();
 
-    //ears
-    8, 9, 11,
-    8, 10, 11,
+    if(input.isCommandActive(InputManager::EXIT)){
+      break;
+    } 
+  }
 
-    12, 13, 15,
-    12, 14, 15,
-
-};
-
-int load_shader(std::string filename, int kind) {
-    std::ifstream ifs(filename);
-    std::string shader_source(
-        (std::istreambuf_iterator<char>(ifs)), 
-        std::istreambuf_iterator<char>()
-    );
-
-    auto str = shader_source.c_str();
-
-    unsigned int shader = glCreateShader(kind);
-    glShaderSource(shader, 1, &str, nullptr);
-    glCompileShader(shader);
-
-    int status;
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-    if(!status) {
-        char info[512];
-        glGetShaderInfoLog(shader, 512, nullptr, info);
-        std::cerr << info << std::endl;
-        exit(-1);
-    }
-
-
-    return shader;
-}
-
-int main(){
-    auto window = create_window();
-
-    auto vertex_shader = load_shader("src/shader.vert", GL_VERTEX_SHADER);
-    auto fragment_shader = load_shader("src/shader.frag", GL_FRAGMENT_SHADER);
-    auto shader_program = glCreateProgram();
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
-
-    int status;
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &status);
-    if(!status) {
-        char info[512];
-        glGetProgramInfoLog(shader_program, 512, nullptr, info);
-        std::cerr << info << std::endl;
-        exit(-1);
-    }
-
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
-
-
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-
-    unsigned int ebo;
-    glGenBuffers(1, &ebo);
-
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-
-
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    while(!glfwWindowShouldClose(window)){
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glUseProgram(shader_program);
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-    return 0;
+  return 0;
 }
