@@ -5,15 +5,20 @@ Pichał wants, Pichał gets
 To compile run
 ```shell
   cmake .
-  make
+  make run
 ```
-and then run picoForest in build directory
 
 ### Important stuff here I guess
-[GLFW](https://www.glfw.org/) is placed in lib/glfw-3.3.9 directory. It's compiled and linked by the main cmake file 
 
 ### To do
 - [x] add glfw library
-- [ ] start project
+- [x] start project
 - [ ] pichał finishes my project
 - [ ] happy ending
+
+### Changes
+- Moved display related functionality to display/MainDisplay class
+- Created Shader class in shaders directory
+- As of now setters in Entity class sets also the modelMatrix used in shaders.
+This means that the state of the Entity should be modified only using them, or, 
+when changing position, rotation or scale inside the Entity class, one should also call getModelMatrix method to apply the changes. 
