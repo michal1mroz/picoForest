@@ -3,7 +3,7 @@
 const std::string Kitty::meshPath = "resources/kitty/kitty.obj";
 
 Kitty::Kitty(std::shared_ptr<Shader> shader)
-    : Entity(meshPath, shader) {}
+    : MovableEntity(meshPath, shader) {}
 
 void Kitty::move() {
   auto input = InputManager::getInstance();

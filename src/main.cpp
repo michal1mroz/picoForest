@@ -9,7 +9,7 @@
 #include "display/InputManager.h"
 #include "entity/Camera.h"
 #include "entity/Entity.h"
-#include "entity/Kitty.h"
+#include "entity/MovableEntities/Kitty.h"
 #include "entity/Light.h"
 #include "meshes/Mesh.h"
 #include "meshes/MeshManager.h"
@@ -26,7 +26,7 @@ int main() {
   std::shared_ptr<Mesh> blockMesh =
       MeshManager::getInstance().getMesh("resources/block/cube.obj");
 
-  std::shared_ptr<Entity> en = std::make_shared<Kitty>(shader1);
+  std::shared_ptr<MovableEntity> en = std::make_shared<Kitty>(shader1);
   std::shared_ptr<Entity> en2 = std::make_shared<Kitty>(shader2);
   en2->setPosition(glm::vec3(2.0f, 1.0f, -2.0f));
 
@@ -44,10 +44,16 @@ int main() {
 
   InputManager& input = InputManager::getInstance();
 
+  double lastTime = glfwGetTime();
+  double deltaTime = 0.0;
+
   while (!window.shouldClose()) {
+    double currentTime = glfwGetTime();
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
     input.pollEvents(window.getWindowPtr()); 
     r.prepare();
-
     en->move();
 
     r.render(targets, camera, light);

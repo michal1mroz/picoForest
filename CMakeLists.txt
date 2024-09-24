@@ -29,6 +29,7 @@ file(GLOB_RECURSE sources
   "src/meshes/*.cpp"
   "src/entity/*.cpp"
   "src/renderer/*.cpp"
+  "src/MovableEntities/*.cpp"
 )
 
 add_executable(${output_name} ${sources})

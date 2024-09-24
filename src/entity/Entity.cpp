@@ -9,6 +9,8 @@ Entity::Entity(const std::string &meshPath, std::shared_ptr<Shader> shader)
   this->shader = shader;
 }
 
+
+
 glm::mat4 Entity::getModelMatrix() const {
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, this->position);
@@ -26,8 +28,6 @@ void Entity::draw() const {
   if (!shader || !mesh)
     return;
 
-  // glm::mat4 model = getModelMatrix();
-  // shader->use();
   shader->setUniform("model", modelMatrix);
 
   mesh->render();

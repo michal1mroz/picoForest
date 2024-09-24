@@ -1,11 +1,11 @@
 #ifndef KITTY_H
 #define KITTY_H
 
-#include "../display/InputManager.h"
-#include "Entity.h"
+#include "../../display/InputManager.h"
+#include "../MovableEntity.h"
 #include <string>
 
-class Kitty : public Entity {
+class Kitty : public MovableEntity {
 public:
   Kitty(std::shared_ptr<Shader> shader);
 

@@ -1,6 +1,10 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+/*
+* Base class for objects that are rendered with mesh and shader
+*/
+
 #include "../meshes/Mesh.h"
 #include "../meshes/MeshManager.h"
 #include "../shaders/Shader.h"
@@ -32,11 +36,9 @@ public:
   }
 
   const std::shared_ptr<Shader> getShader() const { return this->shader; }
-
   virtual void draw() const;
   std::size_t getHash() const;
 
-  virtual void move() = 0;
 private:
   glm::mat4 getModelMatrix() const;
 
