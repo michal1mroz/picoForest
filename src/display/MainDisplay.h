@@ -27,6 +27,7 @@ public:
   MainDisplay &operator=(MainDisplay &&) = delete;
 
   GLFWwindow* getWindowPtr(){return this->window.get();}
+  float getAspectRatio(){return (float)WIDTH / HEIGHT; }
 
   void update();
   bool shouldClose() const;

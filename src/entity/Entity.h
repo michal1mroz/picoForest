@@ -39,6 +39,8 @@ public:
   virtual void draw() const;
   std::size_t getHash() const;
 
+  unsigned int getID() const {return entityID;}
+  bool operator==(const Entity& other);
 private:
   glm::mat4 getModelMatrix() const;
 
@@ -49,6 +51,9 @@ private:
   glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
   glm::mat4 modelMatrix;
+
+  static unsigned int ID_COUNTER;
+  unsigned int entityID;
 };
 
 #endif // ENTITY_H

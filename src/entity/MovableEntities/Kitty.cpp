@@ -5,23 +5,47 @@ const std::string Kitty::meshPath = "resources/kitty/kitty.obj";
 Kitty::Kitty(std::shared_ptr<Shader> shader)
     : MovableEntity(meshPath, shader) {}
 
-void Kitty::move() {
+void Kitty::move(float deltaTime) {
+  moveX(deltaTime);
+  moveY();
+}
+
+void Kitty::moveY(){
   auto input = InputManager::getInstance();
-  auto position = this->getPosition();
-  if(input.isCommandActive(InputManager::MAIN_MOVE_UP)){
-    position.y += 0.5f;
-    this->setPosition(position);
+  auto vel = this->getVelocity();
+  if(getGrounded() && input.isCommandActive(InputManager::MAIN_MOVE_UP)){
+    vel.y = 15* stepSizeX;
+    setGrounded(false);
   }
-  if(input.isCommandActive(InputManager::MAIN_MOVE_DOWN)){
-    position.y -= 0.5f;
-    this->setPosition(position);
+  else if(input.isCommandActive(InputManager::MAIN_MOVE_DOWN)){
+    vel.y = -stepSizeX;
   }
+  else{
+    vel.y = 0;
+  }
+  this->setVelocity(vel);
+}
+
+void Kitty::moveX(float deltaTime){
+  auto& input = InputManager::getInstance();
+  auto oldVelocity = this->getVelocity();
   if(input.isCommandActive(InputManager::MAIN_MOVE_LEFT)){
-    position.x -= 0.5f;
-    this->setPosition(position);
+    oldVelocity.x = -stepSizeX;
   }
-  if(input.isCommandActive(InputManager::MAIN_MOVE_RIGHT)){
-    position.x += 0.5f;
-    this->setPosition(position);
+  else if(input.isCommandActive(InputManager::MAIN_MOVE_RIGHT)){
+    oldVelocity.x = stepSizeX;
   }
+  else{
+    auto oldAcceleration = this->getAcceleration();
+    if(oldVelocity.x > 0){
+      oldVelocity.x -= decelerationRate * deltaTime;
+      if(oldVelocity.x < 0) oldVelocity.x = 0;
+    }
+    else if(oldVelocity.x < 0){
+      oldVelocity.x += decelerationRate * deltaTime;
+      if(oldVelocity.x > 0) oldVelocity.x = 0;
+    }
+     
+  }
+  this->setVelocity(oldVelocity);
 }

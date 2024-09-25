@@ -1,12 +1,17 @@
 #include "Entity.h"
 
+unsigned int Entity::ID_COUNTER = 0;
+
 Entity::Entity(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
-    : mesh{mesh}, shader{shader}, modelMatrix{getModelMatrix()} {}
+    : mesh{mesh}, shader{shader}, modelMatrix{getModelMatrix()} {
+  entityID = ++ID_COUNTER;
+}
 
 Entity::Entity(const std::string &meshPath, std::shared_ptr<Shader> shader)
     : modelMatrix{getModelMatrix()} {
   this->mesh = MeshManager::getInstance().getMesh(meshPath);
   this->shader = shader;
+  entityID = ++ID_COUNTER;
 }
 
 
@@ -35,4 +40,8 @@ void Entity::draw() const {
 
 std::size_t Entity::getHash() const {
   return std::hash<unsigned int>{}(shader->getProgramID());
+}
+
+bool Entity::operator==(const Entity& other){
+  return (this->getID() == other.getID());
 }
