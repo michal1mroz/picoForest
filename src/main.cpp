@@ -67,9 +67,9 @@ int main() {
     lastTime = currentTime;
 
     input.pollEvents(window.getWindowPtr());
-
     r.prepare();
     PhysicsEngine::Update(deltaTime, x, targets);
+    camera.handleMouseDrag();
     r.render(targets, camera, light);
     window.update();
 

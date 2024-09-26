@@ -8,6 +8,37 @@ Camera::Camera(glm::vec3 position, glm::vec3 target, glm::vec3 up, float fov,
   updateProjectionMatrix();
 }
 
+void Camera::handleMouseDrag() {
+  auto handle = InputManager::getInstance();
+  if (handle.isCommandActive(InputManager::MOUSE_LEFT_BUTTON)) {
+    auto mousePosition = handle.getMousePosition();
+    
+    if(mouseLeftFirst){
+      lastMousePosition = mousePosition;
+      mouseLeftFirst = !mouseLeftFirst;
+    }
+    glm::vec2 delta = mousePosition - lastMousePosition;
+    delta.y = -delta.y;
+    lastMousePosition = mousePosition;
+
+    moveCamera(delta);
+  }else{
+    mouseLeftFirst = !mouseLeftFirst;
+  }
+}
+
+void Camera::moveCamera(glm::vec2 delta){
+  azimuth += delta.x * sensitivity;
+  elevation += delta.y * sensitivity;
+  elevation = glm::clamp(elevation, -glm::radians(89.0), glm::radians(89.0));
+  glm::vec3 newPosition;
+  newPosition.x = target.x + radius * cos(elevation) * sin(azimuth);
+  newPosition.y = target.y + radius * sin(elevation);
+  newPosition.z = target.z + radius * cos(elevation) * cos(azimuth);
+
+  setPosition(newPosition);
+}
+
 void Camera::setPosition(const glm::vec3 &pos) {
   this->position = pos;
   updateViewMatrix();
@@ -45,4 +76,3 @@ void Camera::updateProjectionMatrix() {
   this->projectionMatrix = glm::perspective(
       glm::radians(fov), this->aspectRatio, this->nearPlane, this->farPlane);
 }
-
